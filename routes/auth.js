@@ -19,6 +19,7 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
             email,
             nick,
             password: hash,
+            money,
         });
         return res.redirect('/');
     } catch (error) {
