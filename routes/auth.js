@@ -14,7 +14,7 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
         if (exUser) {
             return res.redirect('/join?joinError=이미 가입된 이메일입니다.');
         }
-        const hash = await bcrypt.hash(passwird, 12);
+        const hash = await bcrypt.hash(password, 12);
         await User.create({
             email,
             nick,
