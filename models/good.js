@@ -28,8 +28,8 @@ module.exports = class Good extends Sequelize.Model {
     }
 
     static associate(db) {
-        db.Good.belongsTo(db.User, { as: 'Owner' });
-        db.Good.belongsTo(db.User, { as: 'Sold' });
-        db.Good.hasMany(db.Auction);
+        db.Good.belongsTo(db.User, { as: 'Owner' }); // 누가 등록했는지
+        db.Good.belongsTo(db.User, { as: 'Sold' }); // 누가 낙찰 받았는지
+        db.Good.hasMany(db.Auction); // 상품에 대한 입찰 내역들
     }
 };
