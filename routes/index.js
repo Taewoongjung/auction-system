@@ -136,7 +136,7 @@ router.post('/good/:id/bid', isLoggedIn, async (req, res, next) => {
             GoodId: req.params.id,
         });
         // 실시간으로 입찰 내역 전송
-        req.app.get('io').to(req.params.id).emit('bid', {
+        req.app.get('io').to(req.params.id).emit('bid', {  // req.params.id (방 아이디)가 경매 상품의 아이디
             bid: result.bid,
             msg: result.msg,
             nick: req.user.nick,
