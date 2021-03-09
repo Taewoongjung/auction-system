@@ -85,32 +85,32 @@ router.post('/good', isLoggedIn, upload.single('img'), async (req, res, next) =>
     }
 });
 
-// router.get('/good/:id', isLoggedIn, async (req, res, next) => {
-//     try {
-//         const [good, auction] = await Promise.all([
-//             Good.findOne({
-//                 where: { id: req.params.id },
-//                 include: {
-//                     model: User,
-//                     as: 'Owner',
-//                 },
-//             }),
-//             Auction.findAll({
-//                 where: { goodId: req.params.id },
-//                 include: { model: User },
-//                 order: [['bid', 'ASC']],
-//             }),
-//         ]);
-//         res.render('auction', {
-//             title: `${good.name} - NodeAuction`,
-//             good,
-//             auction,
-//         });
-//     } catch (error) {
-//         console.error(error);
-//         next(error);
-//     }
-// });
+router.get('/good/:id', isLoggedIn, async (req, res, next) => {
+    try {
+        const [good, auction] = await Promise.all([
+            Good.findOne({
+                where: { id: req.params.id },
+                include: {
+                    model: User,
+                    as: 'Owner',
+                },
+            }),
+            Auction.findAll({
+                where: { goodId: req.params.id },
+                include: { model: User },
+                order: [['bid', 'ASC']],
+            }),
+        ]);
+        res.render('auction', {
+            title: `${good.name} - NodeAuction`,
+            good,
+            auction,
+        });
+    } catch (error) {
+        console.error(error);
+        next(error);
+    }
+});
 
 // router.post('/good/:id/bid', isLoggedIn, async (req, res, next) => {
 //     try {
