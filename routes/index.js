@@ -148,7 +148,7 @@ router.post('/good/:id/bid', isLoggedIn, async (req, res, next) => {
     }
 });
 
-router.get('/list', isLoggedIn, async (req, res, next) => {
+router.get('/list', isLoggedIn, async (req, res, next) => { // 리스트
     try {
         const goods = await Good.findAll({
             where: { SoldId: req.user.id },
