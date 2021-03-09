@@ -77,6 +77,7 @@ router.post('/good', isLoggedIn, upload.single('img'), async (req, res, next) =>
             }, {
                 where: { id: success.UserId },
             });
+            // UPDATE Users SET money = money - 14000 WHERE id = 1;
         });
         res.redirect('/');
     } catch (error) {
