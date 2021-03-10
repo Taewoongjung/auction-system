@@ -15,16 +15,23 @@ module.exports = async () => {
             },
         });
         targets.forEach(async (target) => {
-            const success = await Auction.findOne({
-                where: { GoodId: target.id },
-                order: [['bid', 'DESC']],
-            });
-            await Good.update({ SoldId: success.UserId }, { where: { id: target.id } });
-            await User.update({
-                money: sequelize.literal(`money - ${success.bid}`),
-            }, {
-                where: { id: success.UserId },
-            });
+            const t = await sequelize.transaction();
+            try{
+                const success = await Auction.findOne({
+                    where: { GoodId: target.id },
+                    order: [['bid', 'DESC']],
+                });
+                await Good.update({ SoldId: success.UserId }, { where: { id: target.id }, transaction: t });
+                await User.update({
+                    money: sequelize.literal(`money - ${success.bid}`),
+                }, {
+                    where: { id: success.UserId },
+                    transaction: t
+                });
+                await t.commit();
+            } catch (error) {
+                await t.rollback();
+            }
         });
         const unsold = await Good.findAll({  // 서버가 꺼지기 전에도 24시간이 안지나면 다시 서버가 실행되면 스케쥴링 해주기
             where: {
