@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 const schedule = require('node-schedule');
 
-const { Good, Auction, User } = require('../models');
+const { Good, Auction, User, sequelize } = require('../models');
 const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
 
 const router = express.Router();
@@ -67,17 +67,24 @@ router.post('/good', isLoggedIn, upload.single('img'), async (req, res, next) =>
         const end = new Date();
         end.setDate(end.getDate() + 1); // 하루 뒤
         schedule.scheduleJob(end, async () => {
-            const success = await Auction.findOne({
-                where: { GoodId: good.id },
-                order: [['bid', 'DESC']],
-            });
-            await Good.update({ SoldId: success.UserId }, { where: { id: good.id } });
-            await User.update({
-                money: sequelize.literal(`money - ${success.bid}`),
-            }, {
-                where: { id: success.UserId },
-            });
-            // UPDATE Users SET money = money - 14000 WHERE id = 1;
+            const t = await sequelize.transaction();  // transaction으로 묶인것은 같이 행동한다. 
+            try{
+                const success = await Auction.findOne({
+                    where: { GoodId: good.id },
+                    order: [['bid', 'DESC']],
+                });
+                await Good.update({ SoldId: success.UserId }, { where: { id: good.id }, transaction: t });
+                await User.update({
+                    money: sequelize.literal(`money - ${success.bid}`),
+                }, {
+                    where: { id: success.UserId },
+                    transaction: t
+                });
+                await t.commit();  // 성공하면 commit 호출되게함 
+                // UPDATE Users SET money = money - 14000 WHERE id = 1;   
+            } catch (error) {
+                await t.rollback(); // 셋 중 하나라도 실패하면 셋 다 롤백된다.
+            }
         });
         res.redirect('/');
     } catch (error) {
