@@ -5,7 +5,7 @@ const { Good, Auction, User, sequelize } = require('./models');
 
 module.exports = async () => {
     console.log('checkAuction');
-    try{
+    try{ // 서버 꺼진 동안 낙찰 되어야할 물건들을 낙찰 시켜주기.
         const yesterday = new Date();
         yesterday.setDate(yesterday.getDate() - 1); // 어제 시간
         const targets = await Good.findAll({ // 24시간 전에 낙찰받지 못한애들 제일 높은 금액 제시한사람에게 낙찰 처리해주기
