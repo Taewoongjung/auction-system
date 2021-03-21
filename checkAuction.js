@@ -1,3 +1,4 @@
+// 노드 스케쥴이 서버가 꺼졌을 때 동작하지 않는 것들을 보완해주는 부분이다.
 const { Op } = require('Sequelize');
 const schedule = require('node-schedule');
 

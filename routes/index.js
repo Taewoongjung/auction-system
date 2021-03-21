@@ -81,7 +81,7 @@ router.post('/good', isLoggedIn, upload.single('img'), async (req, res, next) =>
                     transaction: t
                 });
                 await t.commit();  // 성공하면 commit 호출되게함 
-                // UPDATE Users SET money = money - 14000 WHERE id = 1;   
+                // UPDATE Users SET money = money - 14000 WHERE id = 1;
             } catch (error) {
                 await t.rollback(); // 셋 중 하나라도 실패하면 셋 다 롤백된다.
             }
